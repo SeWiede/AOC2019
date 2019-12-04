@@ -69,31 +69,34 @@ def main():
 	minDistSteps = 99999
 	x = None
 	minSteps = 99999
-	pT1 = turns1[0]
-	pT2 = turns2[0]
+	pT1 = (0,0,turns1[0][2], 0)
+	pT2 = (0,0,turns2[0][2], 0)
 	stepsT1 = 0
+	idx1 =-1
+	idx2 =-1
 	for t1 in turns1:
+		idx2=-1
+		idx1+=1
 		stepsT1 += t1[3]
 		steps = stepsT1
 		for t2 in turns2:
+			idx2+=1
+			steps += t2[3]			
 			if crossed(pT1, t1, pT2, t2):
 				xtemp = getCross(pT1, t1, pT2, t2)
-				stc = getStepsToCross(pT1, t1, pT2, t2)
-				tempsteps = steps - t1[3] + stc
-				dtemp = abs(xtemp[0]) + abs(xtemp[1])
-				if dtemp < minDist:
-					x = xtemp
-					minDist = dtemp
-					minDistSteps = tempsteps
-				if tempsteps < minSteps:
-					minSteps = tempsteps
-
-			steps += t2[3]
-					
-			
+				if not (xtemp[0] == 0 and xtemp[1] == 0):
+					stc = getStepsToCross(pT1, t1, pT2, t2)
+					tempsteps = steps - t1[3] - t2[3] + stc
+					dtemp = abs(xtemp[0]) + abs(xtemp[1])
+					if dtemp < minDist:
+						x = xtemp
+						minDist = dtemp
+						minDistSteps = tempsteps
+					if tempsteps < minSteps:
+						minSteps = tempsteps
 			pT2 = t2
 		pT1 = t1 
-	
+
 	print(x, minDist,minDistSteps, minSteps)
 
 if __name__== "__main__":

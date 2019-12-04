@@ -24,14 +24,27 @@ def main():
 	for n in range(codes[0], codes[1]+1):
 		double = False
 		dec = True
-		for i in range(1,6):
+		nodoubled = []
+		doubled = []
+		for i in range(2,6):
+			poldd = getDigit(n, i-2)
 			oldd = getDigit(n, i-1)
 			d = getDigit(n, i)
-			if(oldd == d):
+			#print(d, oldd, poldd)
+			if(oldd == poldd and oldd == d):
+				if d in doubled and len(doubled) == 1:
+					double = False
+				nodoubled.append(d)
+			if((not poldd in nodoubled) and poldd == oldd):
 				double = True
-			if(oldd < d):
+				doubled.append(poldd)
+			if((not oldd in nodoubled) and nodoubled != d and d == oldd):
+				double = True
+				doubled.append(d)
+			if(poldd < oldd or oldd < d):
 				dec = False
-				break		
+				break
+		#print(nodoubled)	
 		if double and dec:
 			mc+=1
 			

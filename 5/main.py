@@ -17,9 +17,7 @@ def main():
 			except:
 				pass
 
-	#codesM[1] = 12
-	#codesM[2] = 2
-
+	print("runnning...")
 	memory = []
 	idx = 0
 	while True:
@@ -46,11 +44,29 @@ def main():
 			codes[idx3] = rs
 			idx += 4
 		if op == 3:
-			codes[idx1] = 1 # 1 is only input
+			codes[idx1] = 5 # 5 is only input (or 1)
 			idx += 2
 		if op == 4:
 			print(codes[idx1])
 			idx += 2
+		if op == 5:
+			rd = idx1 if C!=0 else codes[idx1]
+			rt = idx2 if B!=0 else codes[idx2]
+			idx = rt if rd else idx+3
+		if op == 6:
+			rd = idx1 if C!=0 else codes[idx1]
+			rt = idx2 if B!=0 else codes[idx2]
+			idx = rt if not rd else idx+3
+		if op == 7:			
+			rd = idx1 if C!=0 else codes[idx1]
+			rt = idx2 if B!=0 else codes[idx2]
+			codes[idx3] = 1 if rd < rt else 0
+			idx += 4
+		if op == 8:			
+			rd = idx1 if C!=0 else codes[idx1]
+			rt = idx2 if B!=0 else codes[idx2]
+			codes[idx3] = 1 if rd == rt else 0
+			idx += 4
 
 if __name__== "__main__":
 	main()

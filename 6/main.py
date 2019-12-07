@@ -41,27 +41,33 @@ def main():
 		pl = []
 		ol = []
 		
+		#see if mentioned planets are alrdy registered	
 		curP = next((x for x in planets if x.name == p), None)
 		op = next((x for x in planets if x.name == o), None)		
 
+		#if orbiting one isnt seen yet create it and add it to list
 		if op == None:
 			op = Planet(o, p)
 			planets.append(op)
 			op.depth += 1
 
+		#if the parent planet already exist in planet list 
+		#just add the orbiting one to its orbit list
 		if curP != None:
 			curP.o.append(op)
+		#otherwise create it and add afterwards
 		if curP == None:
 			curP = Planet(p, None, op)
 			planets.append(curP)		
 
-		if op != None:
-			op.depth += curP.depth
-			if op.parent == None:
-				op.parent = curP.name
-				op.depth += 1
-				for tempp in op.o:
-					tempp.incDepth(op.depth)
+		#add indirect orbit depth and if the orbiting one does not
+		#have a parent yet recursively add depth to its orbit ones 
+		op.depth += curP.depth
+		if op.parent == None:
+			op.parent = curP.name
+			op.depth += 1
+			for tempp in op.o:
+				tempp.incDepth(op.depth)
 	
 
 	orbits = 0

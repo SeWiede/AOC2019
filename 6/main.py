@@ -18,6 +18,15 @@ class Planet:
 		for p in self.o:
 			p.incDepth(x)
 
+	def depthSearch(self, d):
+		
+		return d
+
+
+	def findSAN(self):
+		return self.depthSearch(0)
+
+
 	def __str__(self):
 		return self.name + "(" + str(self.depth) + "):["+ str(self.parent) +"]"
 
@@ -46,25 +55,21 @@ def main():
 		op = next((x for x in planets if x.name == o), None)		
 
 		#if orbiting one isnt seen yet create it and add it to list
+		
+		if curP == None:
+			curP = Planet(p)
+			planets.append(curP)
+	
 		if op == None:
-			op = Planet(o, p)
+			op = Planet(o, curP)
 			planets.append(op)
 			op.depth += 1
 
-		#if the parent planet already exist in planet list 
-		#just add the orbiting one to its orbit list
-		if curP != None:
-			curP.o.append(op)
-		#otherwise create it and add afterwards
-		if curP == None:
-			curP = Planet(p, None, op)
-			planets.append(curP)		
-
-		#add indirect orbit depth and if the orbiting one does not
-		#have a parent yet recursively add depth to its orbit ones 
+		curP.o.append(op)
+	
 		op.depth += curP.depth
 		if op.parent == None:
-			op.parent = curP.name
+			op.parent = curP
 			op.depth += 1
 			for tempp in op.o:
 				tempp.incDepth(op.depth)
@@ -75,6 +80,13 @@ def main():
 		#print(p)
 		orbits += p.depth
 	print(str(orbits))
+
+	#find SAN
+	YOU = next((x for x in planets if x.name == "YOU"), None)
+	if YOU == None:
+		print("YOU not present")
+		return
+	print(str(YOU.findSAN()))	
 
 if __name__== "__main__":
 	main()

@@ -18,13 +18,27 @@ class Planet:
 		for p in self.o:
 			p.incDepth(x)
 
-	def depthSearch(self, d):
-		
-		return d
+	def depthSearch(self, d, sender):
+		if self.name == "SAN":
+			return d
+		if len(self.o) == 0 and self.parent == None:
+			return -1
 
+		if self.parent != None and self.parent.name != sender:
+			retP = self.parent.depthSearch(d+1, self.name)
+			if retP > -1:
+				return retP
+
+		for op in self.o:
+			if op.name == sender:
+				continue
+			ret = op.depthSearch(d+1, self.name)
+			if ret > -1:
+				return ret
+		return -1
 
 	def findSAN(self):
-		return self.depthSearch(0)
+		return self.depthSearch(0, self.name) - 2 
 
 
 	def __str__(self):

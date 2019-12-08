@@ -17,7 +17,6 @@ def main():
 			except:
 				pass
 
-	print("runnning...")
 	memory = []
 	idx = 0
 	while True:
@@ -44,7 +43,12 @@ def main():
 			codes[idx3] = rs
 			idx += 4
 		if op == 3:
-			codes[idx1] = 5 # 5 is only input (or 1)
+			i = sys.stdin.readline()
+			try:
+				codes[idx1] = int(i)
+			except:
+				codes[idx1] = i
+				print("god damnit")
 			idx += 2
 		if op == 4:
 			print(codes[idx1])

@@ -48,7 +48,7 @@ def main():
 				codes[idx1] = int(i)
 			except:
 				codes[idx1] = i
-				print("god damnit")
+				print >> sys.stderr, "god damnit"
 			idx += 2
 		if op == 4:
 			print(codes[idx1])

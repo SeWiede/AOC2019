@@ -22,22 +22,22 @@ def getAMP(setting, AMP):
 	return ret
 
 def startAmp(setting):
-	prog = subprocess.Popen(["python", "../5/main.py", sys.argv[1]],
+	prog = subprocess.Popen(["python3", "../5/main.py", sys.argv[1]],
 							stdin=subprocess.PIPE,
 							stdout=subprocess.PIPE)
-	prog.stdin.write(str(setting)+"\n")
-	
+	prog.stdin.write((str(setting)+"\n").encode())
 	return prog
 
-def getAMPProg(prog, AMP):
-	prog.stdin.write(str(AMP) + "\n")
-	ret = -1
+def getAMPProg(p, AMP):
+	print(p)
+	p.stdin.write((str(AMP) + "\n").encode())
+	ret = 0
 	x = ""
 	try:
-		x = prog.stdout.readline()
+		x = p.stdout.readline()
 		ret = int(x)
 	except:
-		print(x)
+		print("Error while reading programs stdout")
 
 	return ret
 
@@ -55,11 +55,18 @@ def main():
 		C = startAmp(cl[2])
 		D = startAmp(cl[3])
 		E = startAmp(cl[4])
+		print("test write")
+		A.stdin.write((str(0)+"\n").encode())
+		B.stdin.write("0\n".encode())
+		D.stdin.write("0\n".encode())
+		print("test write done")
+		print(A)
 		AAmp = getAMPProg(A, 0)
 		BAmp = getAMPProg(B, AAmp)
 		CAmp = getAMPProg(C, BAmp)
 		DAmp = getAMPProg(D, CAmp)
 		EAmp = getAMPProg(E, DAmp)
+		print("init done")
 		while True:
 			AAmp = getAMPProg(A, EAmp)
 			BAmp = getAMPProg(B, AAmp)

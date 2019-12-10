@@ -1,10 +1,18 @@
 import sys
 import functools
+import math
+
+xb=26
+yb=36
 
 def cmpf(x,y):
-	d1 = abs(26 - x[0]) + abs(36 - x[1])
-	d2 = abs(26 - y[0]) + abs(36 - y[1])
+	d1 = abs(xb - x[0]) + abs(yb - x[1])
+	d2 = abs(xb - y[0]) + abs(yb - y[1])
 	return d1 - d2
+
+def printField(f):
+	for row in f:
+		print(''.join(row))
 
 def main():
 	lines = sys.stdin
@@ -25,13 +33,8 @@ def main():
 		field.append(line[0:len(line)-1])
 		yline +=1
 
-	#print(field)
-
 	w=len(field[0])
 	h=len(field)
-
-	#print(w,h)
-	#print(ast)
 
 	best = 0
 	
@@ -57,72 +60,78 @@ def main():
 	print(best-1)
 	print(bestA)
 
+	xb=bestA[0]
+	yb=bestA[1]
 
 
-	lep = []
-	for x in range(bestA[0], w):
-		lep.append((x, 0))
-	for y in range(0, h):
-		lep.append((w-1, y))	
-	for x in range(w-1, 0):
-		lep.append((x, h-1))
-	for y in range(h-1, 0):
-		lep.append((0, y))
-	for x in range(0, bestA[0]):
-		lep.append((x,0))
+	acc=10
+	r = int(math.log10(acc))
+	step=1/acc
+	lep=[]
+	cura=0
+
+	#fill lep with all possible angles with given accuracy	
+	while math.floor(cura) < 360:
+		lep.append(cura)
+		cura = round(cura + step,1)	
+
+	k = 270*acc
 
 	i = bestA
+	ast.remove(bestA)
 	lastA = None
 	by = bestA[1]
 	field[by] = field[by][0:bestA[0]] + "B" + field[by][bestA[0]+1:w]
 
-	#sorted(ast, key=lambda x : (abs(i[0] - x[0]) + abs(i[1] - x[1])))
 
+	#sort doenst work
+	sorted(ast, key=lambda x : (abs(i[0] - x[0]) + abs(i[1] - x[1])))
+
+	#just braindead sort it
 	for s in range(len(ast)):
 		for t in range(len(ast)):
-			if cmpf(ast[s], ast[t]) < 0:
+			dxs = bestA[0] - ast[s][0]
+			dys = bestA[1] - ast[s][1]
+			tas = round((math.atan2(dys,dxs)*360/2/math.pi-90)%360,r)
+			dxt = bestA[0] - ast[t][0]
+			dyt = bestA[1] - ast[t][1]
+			tat = round((math.atan2(dyt,dxt)*360/2/math.pi-90)%360,r)
+			if tas< tat: 
+				temp = ast[s]
+				ast[s] = ast[t]
+				ast[t] = temp
+			if tas == tat and cmpf(ast[s], ast[t]) > 0:
 				temp = ast[s]
 				ast[s] = ast[t]
 				ast[t] = temp
 
-
 	if i != None:
 		hc = 0
 		while hc < 200:
-			for l in lep:
+			first = 0
+			while True:
+				l = lep[k]
 				if hc >= 200:
 					break
 				angles = []
 				for j in ast:
-					dx = j[0] - i[0]
-					dy = j[1] - i[1]
-
-					dxl = l[0] - i[0]
-					dyl = l[1] - i[1]
-					q = 1 if dx > 0 and dy >= 0 else 2 if dx >= 0 and dy < 0 else 3 if dx < 0 and dy <= 0 else 4 if dx <= 0 and dy > 0 else 0
-					ql = 1 if dxl > 0 and dyl >= 0 else 2 if dxl >= 0 and dyl < 0 else 3 if dxl < 0 and dyl <= 0 else 4 if dxl <= 0 and dyl > 0 else 0
-					if dx != 0:
-						v = dy/float(dx)
-					else:
-						v = 1000000 if dy > 0 else -1000000
-					if dxl != 0:
-						vl = dyl/float(dxl)
-					else:
-						vl = 1000000 if dyl > 0 else -1000000
-		
-					if v == vl and q == ql:
+					dx = i[0] - j[0]
+					dy = i[1] - j[1]
+					
+					ta = round((math.atan2(dy,dx)*360/2/math.pi-180)%360, r)
+					if ta == l:
+						ast.remove(j)
 						hc +=1
-						field[j[1]] = field[j[1]][0:j[0]] + "X" + field[j[1]][j[0]+1:w]
+						field[j[1]] = field[j[1]][0:j[0]] + str(hc%10) + field[j[1]][j[0]+1:w]
 						if hc == 200:
 							field[j[1]] = field[j[1]][0:j[0]] + "@" + field[j[1]][j[0]+1:w]
 						lastA = j
 						break
+				if k == len(lep)-1:
+					k = 0
+				else:
+					k+=1
 	
-	for row in field:
-		print(''.join(row))
-
-
-
 	print(lastA[0]*100+lastA[1])
 	print(lastA)
 if __name__== "__main__":

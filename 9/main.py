@@ -36,7 +36,8 @@ def main():
 		idx3 = codes[idx+3]+offset
 	
 		if op == 3:
-			i = sys.stdin.readline()
+			print("ok", file=sys.stderr)
+			i = sys.stdin.readline(1)
 			try:
 				n = int(i)
 				if C == 2:
@@ -48,6 +49,7 @@ def main():
 			except:
 				print("no digit given", file=sys.stderr)
 				return
+			print("ok", file=sys.stderr)
 			idx += 2
 			continue
 		if op == 4:

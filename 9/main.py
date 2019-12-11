@@ -1,4 +1,5 @@
 import sys
+import math
 
 def main():
 	lines = sys.stdin
@@ -27,9 +28,9 @@ def main():
 		op =codes[idx]%100 #is 0x anyway
 		if op == 99:
 			break
-		C = codes[idx]/100%10
-		B = codes[idx]/1000%10
-		A = codes[idx]/10000%10
+		C = math.floor(codes[idx]/100%10)
+		B = math.floor(codes[idx]/1000%10)
+		A = math.floor(codes[idx]/10000%10)
 		idx1 = codes[idx+1]+offset
 		idx2 = codes[idx+2]+offset
 		idx3 = codes[idx+3]+offset
@@ -45,7 +46,7 @@ def main():
 				if C== 0:
 					codes[idx1] = n
 			except:
-				print >> sys.stderr, "no digit given"
+				print("no digit given", file=sys.stderr)
 				return
 			idx += 2
 			continue
@@ -67,7 +68,6 @@ def main():
 			 	rb += codes[rb+idx1]
 			idx += 2
 			continue
-
 
 		rd = codes[idx1] if C==0 else idx1-offset if C==1 else codes[rb+idx1]
 		rt = codes[idx2] if B==0 else idx2-offset if B==1 else codes[rb+idx2]
@@ -99,7 +99,7 @@ def main():
 			idx += 4
 			continue
 
-		print >> sys.stderr, "WRONG OPCODE: " + str(op) + " at index: " + str(idx-offset)
+		print("WRONG OPCODE: " + str(op) + " at index: " + str(idx-offset), file=sys.stderr)
 		break
 
 if __name__== "__main__":

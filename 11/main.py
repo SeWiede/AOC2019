@@ -3,30 +3,16 @@ import itertools
 import subprocess
 import math
 
-black = 1#"."
-white = 0#"#"
+from vm import vm
+
+import time
+
+black = 0#"."
+white = 1#"#"
 UP="^"
 DOWN="v"
 LEFT="<"
 RIGHT=">"
-
-def startProg():
-	prog = subprocess.Popen(["python3", "../9/main.py", sys.argv[1]],
-							stdin=subprocess.PIPE,
-							stdout=subprocess.PIPE)
-	return prog
-
-def writeProg(p, s):
-	print("writing...")
-
-def readProg(p):
-	color = p.stdout.readline()
-	direction = p.stdout.readline()
-	try:
-		return (int(color), int(direction))
-	except:
-		print(color, direction)
-		print("error while reading from prog", file=sys.stderr)
 
 def getDir(s, l):
 	if s == UP:
@@ -38,7 +24,7 @@ def getDir(s, l):
 	if s == LEFT:
 		return DOWN if l==0 else UP
 
-def getNeswPos(pos, d):
+def getNewPos(pos, s):
 	if s == UP:
 		return (pos[0], pos[1]-1)
 	if s == DOWN:
@@ -48,42 +34,45 @@ def getNeswPos(pos, d):
 	if s == LEFT:
 		return (pos[0]-1, pos[1])
 
+def printField(f):
+	for row in f:
+		print(''.join(map(lambda x: '#' if x == 1 else ' ' if x == 0 else x, row)))
+
 def main():
-	size= 999
+	lines = sys.stdin
+
+	if len(sys.argv) > 1:
+		f = open(sys.argv[1], "r")
+		lines = f.readlines()
+
+	size= 99
 	field = [[black] * size for x in range(size)]
 	drawnL = []
 	pos = (math.floor(size/2), math.floor(size/2))
 	d = UP
-	#p = startProg()
-	p = subprocess.Popen(["python3", "../9/main.py", sys.argv[1]],
-							stdin=subprocess.PIPE,
-							stdout=subprocess.PIPE, bufsize=100)
-	
-	while p.poll() == None:
+
+	p = vm(lines)
+	p.send(None)
+	ns = 0	
+	while True:
 		y = pos[1]
-		x = pos[1]
-		#writeProg(p, field[y][x])
-		print("writing...")
-		p.stdin.write((str(field[y][x])+"\n").encode())
-		print("reading...")
+		x = pos[0]
 		
-		color = p.stdout.readline(1)
-		print("reading...")
-		direction = p.stdout.readline(1)
-		print("done")
+		#p.stdin.write((str(field[y][x])+"\n").encode())
 		try:
-			out = (int(color), int(direction))
+			color = p.send(field[y][x])
+			direction = next(p)
+			TEST= next(p)
 		except:
-			print(color, direction)
-			print("error while reading from prog", file=sys.stderr)
-		
+			break
+
 		#out = readProg(p)
 		if pos not in drawnL:
-			drawnL.append(pos)
-		field[y][x] = out[0]
-		newd = getDir(d, out[1])
-		getNeswPos(pos, newd)
-
+			drawnL.append(pos)	
+		field[y][x] = color
+		d = getDir(d, direction)
+		pos = getNewPos(pos, d)
+		
 	print(len(drawnL))
 
 if __name__== "__main__":

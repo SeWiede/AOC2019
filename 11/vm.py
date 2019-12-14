@@ -30,7 +30,9 @@ def vm(lines):
 		idx3 = codes[idx+3]+offset
 	
 		if op == 3:
-			i = yield -1 
+			i = yield -99
+			if i == None:
+				continue 
 			try:
 				n = int(i)
 				if C == 2:
@@ -40,8 +42,9 @@ def vm(lines):
 				if C== 0:
 					codes[idx1] = n
 			except:
+				print(i)
 				print("no digit given", file=sys.stderr)
-				return
+				continue
 			idx += 2
 			continue
 		if op == 4:

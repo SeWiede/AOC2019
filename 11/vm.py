@@ -31,6 +31,7 @@ def vm(lines):
 	
 		if op == 3:
 			i = yield -99
+			#print("GOT INPUT: " + str(i))
 			if i == None:
 				continue 
 			try:
@@ -55,6 +56,7 @@ def vm(lines):
 				X = codes[idx+1]
 			if C == 0:
 				X = codes[idx1]
+			#print("OUTPUT: " + str(X))
 			yield X
 			idx += 2
 			continue
